@@ -11,7 +11,6 @@
 
 using namespace std;
 
-// ==================== 杈呭姪鍑芥暟 ====================
 bool safeStoi(const string& str, int& out) {
     try {
         size_t pos;
@@ -27,7 +26,6 @@ void clearInputBuffer() {
     cin.ignore((numeric_limits<streamsize>::max)(), '\n');
 }
 
-// ==================== Date 绫?====================
 class Date {
 private:
     int year, month, day;
@@ -86,7 +84,6 @@ public:
     }
 };
 
-// ==================== Student 绫?====================
 class Student {
 private:
     string name;
@@ -151,7 +148,6 @@ public:
     }
 };
 
-// ==================== StudentManager 绫?====================
 class StudentManager {
 private:
     vector<Student> students;
@@ -162,7 +158,7 @@ public:
     void loadFromFile() {
         ifstream infile(filename);
         if (!infile.is_open()) {
-            cout << "鎻愮ず锛氭暟鎹枃浠?" << filename << " 涓嶅瓨鍦紝灏嗗垱寤烘柊鏂囦欢銆? << endl;
+            cout << "[提示] 数据文件 " << filename << " 不存在，将创建新文件。" << endl;
             return;
         }
         students.clear();
@@ -175,20 +171,20 @@ public:
             students.push_back(s);
         }
         infile.close();
-        cout << "鎴愬姛浠?" << filename << " 鍔犺浇 " << students.size() << " 鏉¤褰曘€? << endl;
+        cout << "[成功] 已从 " << filename << " 加载 " << students.size() << " 条记录。" << endl;
     }
 
     void saveToFile() const {
         ofstream outfile(filename);
         if (!outfile.is_open()) {
-            cout << "閿欒锛氭棤娉曟墦寮€鏂囦欢 " << filename << " 杩涜鍐欏叆銆? << endl;
+            cout << "[错误] 无法打开文件 " << filename << " 进行写入。" << endl;
             return;
         }
         for (const auto& s : students) {
             outfile << s << endl;
         }
         outfile.close();
-        cout << "鎴愬姛淇濆瓨 " << students.size() << " 鏉¤褰曞埌 " << filename << "銆? << endl;
+        cout << "[成功] 已保存 " << students.size() << " 条记录到 " << filename << "。" << endl;
     }
 
     bool isIdExists(const string& id) const {
@@ -199,122 +195,122 @@ public:
     }
 
     void addStudent() {
-        cout << "\n===== 娣诲姞瀛︾敓璁板綍 =====" << endl;
+        cout << "\n===== 添加学生 =====" << endl;
         Student s;
         string name, id, gender, dorm;
         int year, month, day;
 
-        cout << "璇疯緭鍏ュ鍚? ";
+        cout << "姓名: ";
         cin >> name;
         s.setName(name);
 
-        cout << "璇疯緭鍏ュ鍙? ";
+        cout << "学号: ";
         cin >> id;
         if (isIdExists(id)) {
-            cout << "閿欒锛氬鍙?" << id << " 宸插瓨鍦紒" << endl;
+            cout << "[错误] 学号 " << id << " 已存在！" << endl;
             return;
         }
         s.setId(id);
 
-        cout << "璇疯緭鍏ユ€у埆(鐢?濂?: ";
+        cout << "性别(男/女): ";
         cin >> gender;
-        if (gender != "鐢? && gender != "濂?) {
-            cout << "閿欒锛氭€у埆鍙兘涓?鐢?鎴?濂筹紒" << endl;
+        if (gender != "男" && gender != "女") {
+            cout << "[错误] 性别只能为 男 或 女！" << endl;
             return;
         }
         s.setGender(gender);
 
-        cout << "璇疯緭鍏ュ嚭鐢熸棩鏈?骞?鏈?鏃?: ";
+        cout << "出生日期(年 月 日): ";
         if (!(cin >> year >> month >> day)) {
             clearInputBuffer();
-            cout << "閿欒锛氭棩鏈熻緭鍏ユ牸寮忎笉姝ｇ‘锛? << endl;
+            cout << "[错误] 日期格式不正确！" << endl;
             return;
         }
         Date d(year, month, day);
         if (!d.isValid()) {
-            cout << "閿欒锛氭棩鏈熶笉鍚堟硶锛? << endl;
+            cout << "[错误] 日期不合法！" << endl;
             return;
         }
         s.setBirthDate(d);
 
-        cout << "璇疯緭鍏ュ鑸嶅彿: ";
+        cout << "宿舍号: ";
         cin >> dorm;
         s.setDorm(dorm);
 
         students.push_back(s);
-        cout << "娣诲姞鎴愬姛锛? << endl;
+        cout << "[成功] 添加成功！" << endl;
     }
 
     void modifyByName() {
-        cout << "\n===== 鏍规嵁濮撳悕淇敼璁板綍 =====" << endl;
+        cout << "\n===== 根据姓名修改记录 =====" << endl;
         string name;
-        cout << "璇疯緭鍏ヨ淇敼鐨勫鐢熷鍚? ";
+        cout << "请输入要修改的学生姓名: ";
         cin >> name;
 
         for (auto& s : students) {
             if (s.getName() == name) {
-                cout << "鎵惧埌璁板綍锛? << endl;
+                cout << "找到记录：" << endl;
                 s.display();
 
-                cout << "\n璇疯緭鍏ユ柊淇℃伅锛堢洿鎺ュ洖杞︿繚鐣欏師鍊硷級:" << endl;
+                cout << "\n请输入新信息（直接回车保留原值）:" << endl;
                 string newVal;
                 int y, m, d;
 
-                cout << "鏂板鍚?" << s.getName() << "): ";
                 cin.ignore();
+                cout << "新姓名(" << s.getName() << "): ";
                 getline(cin, newVal);
                 if (!newVal.empty()) s.setName(newVal);
 
-                cout << "鏂板鍙?" << s.getId() << "): ";
+                cout << "新学号(" << s.getId() << "): ";
                 getline(cin, newVal);
                 if (!newVal.empty()) {
                     if (isIdExists(newVal) && newVal != s.getId()) {
-                        cout << "閿欒锛氬鍙峰凡瀛樺湪锛? << endl;
+                        cout << "[错误] 学号已存在！" << endl;
                         return;
                     }
                     s.setId(newVal);
                 }
 
-                cout << "鏂版€у埆(" << s.getGender() << "): ";
+                cout << "新性别(" << s.getGender() << "): ";
                 getline(cin, newVal);
                 if (!newVal.empty()) {
-                    if (newVal != "鐢? && newVal != "濂?) {
-                        cout << "閿欒锛氭€у埆鏃犳晥锛屼慨鏀瑰彇娑堛€? << endl;
+                    if (newVal != "男" && newVal != "女") {
+                        cout << "[错误] 性别无效，修改取消。" << endl;
                         return;
                     }
                     s.setGender(newVal);
                 }
 
-                cout << "鏂板嚭鐢熸棩鏈?骞?" << s.getBirthDate().getYear() << "): ";
+                cout << "新出生年(" << s.getBirthDate().getYear() << "): ";
                 string yStr;
                 getline(cin, yStr);
                 if (!yStr.empty()) {
                     if (!safeStoi(yStr, y)) {
-                        cout << "閿欒锛氬勾浠借緭鍏ユ棤鏁堬紝淇敼鍙栨秷銆? << endl;
+                        cout << "[错误] 年份无效，修改取消。" << endl;
                         return;
                     }
                 } else {
                     y = s.getBirthDate().getYear();
                 }
 
-                cout << "鏂板嚭鐢熸棩鏈?鏈?" << s.getBirthDate().getMonth() << "): ";
+                cout << "新出生月(" << s.getBirthDate().getMonth() << "): ";
                 string mStr;
                 getline(cin, mStr);
                 if (!mStr.empty()) {
                     if (!safeStoi(mStr, m)) {
-                        cout << "閿欒锛氭湀浠借緭鍏ユ棤鏁堬紝淇敼鍙栨秷銆? << endl;
+                        cout << "[错误] 月份无效，修改取消。" << endl;
                         return;
                     }
                 } else {
                     m = s.getBirthDate().getMonth();
                 }
 
-                cout << "鏂板嚭鐢熸棩鏈?鏃?" << s.getBirthDate().getDay() << "): ";
+                cout << "新出生日(" << s.getBirthDate().getDay() << "): ";
                 string dStr;
                 getline(cin, dStr);
                 if (!dStr.empty()) {
                     if (!safeStoi(dStr, d)) {
-                        cout << "閿欒锛氭棩鏈熻緭鍏ユ棤鏁堬紝淇敼鍙栨秷銆? << endl;
+                        cout << "[错误] 日期无效，修改取消。" << endl;
                         return;
                     }
                 } else {
@@ -323,30 +319,30 @@ public:
 
                 Date newDate(y, m, d);
                 if (!newDate.isValid()) {
-                    cout << "閿欒锛氭棩鏈熶笉鍚堟硶锛屼慨鏀瑰彇娑堛€? << endl;
+                    cout << "[错误] 日期不合法，修改取消。" << endl;
                     return;
                 }
                 s.setBirthDate(newDate);
 
-                cout << "鏂板鑸嶅彿(" << s.getDorm() << "): ";
+                cout << "新宿舍号(" << s.getDorm() << "): ";
                 getline(cin, newVal);
                 if (!newVal.empty()) s.setDorm(newVal);
 
-                cout << "淇敼鎴愬姛锛? << endl;
+                cout << "[成功] 修改成功！" << endl;
                 return;
             }
         }
-        cout << "鏈壘鍒板鍚嶄负 " << name << " 鐨勫鐢熴€? << endl;
+        cout << "未找到姓名为 " << name << " 的学生。" << endl;
     }
 
     void displayAll() const {
         if (students.empty()) {
-            cout << "鏆傛棤瀛︾敓璁板綍銆? << endl;
+            cout << "暂无学生记录。" << endl;
             return;
         }
-        cout << "\n===== 鎵€鏈夊鐢熻褰?=====" << endl;
-        cout << left << setw(10) << "濮撳悕" << setw(12) << "瀛﹀彿" << setw(6) << "鎬у埆"
-             << setw(12) << "鍑虹敓鏃ユ湡" << setw(6) << "骞撮緞" << setw(10) << "瀹胯垗鍙? << endl;
+        cout << "\n===== 所有学生记录 =====" << endl;
+        cout << left << setw(10) << "姓名" << setw(12) << "学号" << setw(6) << "性别"
+             << setw(12) << "出生日期" << setw(6) << "年龄" << setw(10) << "宿舍号" << endl;
         cout << string(60, '-') << endl;
         for (const auto& s : students) {
             s.display();
@@ -354,104 +350,104 @@ public:
     }
 
     void findStudent() const {
-        cout << "\n===== 鏌ユ壘璁板綍 =====" << endl;
-        cout << "1. 鎸夊鍙锋煡鎵? << endl;
-        cout << "2. 鎸夊鍚嶆煡鎵? << endl;
-        cout << "璇烽€夋嫨: ";
+        cout << "\n===== 查找记录 =====" << endl;
+        cout << "1. 按学号查找" << endl;
+        cout << "2. 按姓名查找" << endl;
+        cout << "请选择: ";
         int choice;
         if (!(cin >> choice)) {
             clearInputBuffer();
-            cout << "杈撳叆鏃犳晥銆? << endl;
+            cout << "输入无效。" << endl;
             return;
         }
 
         if (choice == 1) {
             string id;
-            cout << "璇疯緭鍏ュ鍙? ";
+            cout << "请输入学号: ";
             cin >> id;
             for (const auto& s : students) {
                 if (s.getId() == id) {
-                    cout << "鎵惧埌璁板綍锛? << endl;
-                    cout << left << setw(10) << "濮撳悕" << setw(12) << "瀛﹀彿" << setw(6) << "鎬у埆"
-                         << setw(12) << "鍑虹敓鏃ユ湡" << setw(6) << "骞撮緞" << setw(10) << "瀹胯垗鍙? << endl;
+                    cout << "找到记录：" << endl;
+                    cout << left << setw(10) << "姓名" << setw(12) << "学号" << setw(6) << "性别"
+                         << setw(12) << "出生日期" << setw(6) << "年龄" << setw(10) << "宿舍号" << endl;
                     cout << string(60, '-') << endl;
                     s.display();
                     return;
                 }
             }
-            cout << "鏈壘鍒板鍙蜂负 " << id << " 鐨勫鐢熴€? << endl;
+            cout << "未找到学号为 " << id << " 的学生。" << endl;
         } else if (choice == 2) {
             string name;
-            cout << "璇疯緭鍏ュ鍚? ";
+            cout << "请输入姓名: ";
             cin >> name;
             bool found = false;
             for (const auto& s : students) {
                 if (s.getName() == name) {
                     if (!found) {
-                        cout << "鎵惧埌璁板綍锛? << endl;
-                        cout << left << setw(10) << "濮撳悕" << setw(12) << "瀛﹀彿" << setw(6) << "鎬у埆"
-                             << setw(12) << "鍑虹敓鏃ユ湡" << setw(6) << "骞撮緞" << setw(10) << "瀹胯垗鍙? << endl;
+                        cout << "找到记录：" << endl;
+                        cout << left << setw(10) << "姓名" << setw(12) << "学号" << setw(6) << "性别"
+                             << setw(12) << "出生日期" << setw(6) << "年龄" << setw(10) << "宿舍号" << endl;
                         cout << string(60, '-') << endl;
                         found = true;
                     }
                     s.display();
                 }
             }
-            if (!found) cout << "鏈壘鍒板鍚嶄负 " << name << " 鐨勫鐢熴€? << endl;
+            if (!found) cout << "未找到姓名为 " << name << " 的学生。" << endl;
         } else {
-            cout << "鏃犳晥閫夋嫨銆? << endl;
+            cout << "无效选择。" << endl;
         }
     }
 
     void deleteStudent() {
-        cout << "\n===== 鍒犻櫎璁板綍 =====" << endl;
-        cout << "1. 鎸夊鍙峰垹闄? << endl;
-        cout << "2. 鎸夊鍚嶅垹闄? << endl;
-        cout << "璇烽€夋嫨: ";
+        cout << "\n===== 删除记录 =====" << endl;
+        cout << "1. 按学号删除" << endl;
+        cout << "2. 按姓名删除" << endl;
+        cout << "请选择: ";
         int choice;
         if (!(cin >> choice)) {
             clearInputBuffer();
-            cout << "杈撳叆鏃犳晥銆? << endl;
+            cout << "输入无效。" << endl;
             return;
         }
 
         if (choice == 1) {
             string id;
-            cout << "璇疯緭鍏ュ鍙? ";
+            cout << "请输入学号: ";
             cin >> id;
             for (auto it = students.begin(); it != students.end(); ++it) {
                 if (it->getId() == id) {
-                    cout << "鎵惧埌璁板綍锛? << endl;
+                    cout << "找到记录：" << endl;
                     it->display();
-                    cout << "纭鍒犻櫎鍚楋紵(y/n): ";
+                    cout << "确认删除吗？(y/n): ";
                     char confirm;
                     cin >> confirm;
                     if (confirm == 'y' || confirm == 'Y') {
                         students.erase(it);
-                        cout << "鍒犻櫎鎴愬姛锛? << endl;
+                        cout << "[成功] 删除成功！" << endl;
                     } else {
-                        cout << "宸插彇娑堝垹闄ゃ€? << endl;
+                        cout << "已取消删除。" << endl;
                     }
                     return;
                 }
             }
-            cout << "鏈壘鍒板鍙蜂负 " << id << " 鐨勫鐢熴€? << endl;
+            cout << "未找到学号为 " << id << " 的学生。" << endl;
         } else if (choice == 2) {
             string name;
-            cout << "璇疯緭鍏ュ鍚? ";
+            cout << "请输入姓名: ";
             cin >> name;
             vector<vector<Student>::iterator> toDelete;
             for (auto it = students.begin(); it != students.end(); ++it) {
                 if (it->getName() == name) toDelete.push_back(it);
             }
             if (toDelete.empty()) {
-                cout << "鏈壘鍒板鍚嶄负 " << name << " 鐨勫鐢熴€? << endl;
+                cout << "未找到姓名为 " << name << " 的学生。" << endl;
                 return;
             }
             if (toDelete.size() > 1) {
-                cout << "鎵惧埌 " << toDelete.size() << " 鏉¤褰曪紝鍏ㄩ儴鍒犻櫎鍚楋紵(y/n): ";
+                cout << "找到 " << toDelete.size() << " 条记录，全部删除吗？(y/n): ";
             } else {
-                cout << "纭鍒犻櫎鍚楋紵(y/n): ";
+                cout << "确认删除吗？(y/n): ";
             }
             char confirm;
             cin >> confirm;
@@ -459,38 +455,37 @@ public:
                 for (int i = (int)toDelete.size() - 1; i >= 0; --i) {
                     students.erase(toDelete[i]);
                 }
-                cout << "鍒犻櫎鎴愬姛锛? << endl;
+                cout << "[成功] 删除成功！" << endl;
             } else {
-                cout << "宸插彇娑堝垹闄ゃ€? << endl;
+                cout << "已取消删除。" << endl;
             }
         } else {
-            cout << "鏃犳晥閫夋嫨銆? << endl;
+            cout << "无效选择。" << endl;
         }
     }
 };
 
-// ==================== 涓诲嚱鏁?====================
 int main() {
-    system("chcp 65001");
+    system("chcp 65001 > nul");
 
     StudentManager manager;
     manager.loadFromFile();
 
     int choice;
     do {
-        cout << "\n===== 瀛︾敓淇℃伅绠＄悊绯荤粺 =====" << endl;
-        cout << "1. 娣诲姞璁板綍" << endl;
-        cout << "2. 鏍规嵁濮撳悕淇敼璁板綍" << endl;
-        cout << "3. 鏄剧ず鎵€鏈夎褰? << endl;
-        cout << "4. 鏌ユ壘璁板綍" << endl;
-        cout << "5. 鍒犻櫎璁板綍" << endl;
-        cout << "6. 淇濆瓨鏂囦欢" << endl;
-        cout << "0. 閫€鍑? << endl;
-        cout << "璇烽€夋嫨鎿嶄綔: ";
+        cout << "\n===== 学生信息管理系统 =====" << endl;
+        cout << "1. 添加记录" << endl;
+        cout << "2. 根据姓名修改记录" << endl;
+        cout << "3. 显示所有记录" << endl;
+        cout << "4. 查找记录" << endl;
+        cout << "5. 删除记录" << endl;
+        cout << "6. 保存文件" << endl;
+        cout << "0. 退出" << endl;
+        cout << "请选择操作: ";
 
         if (!(cin >> choice)) {
             clearInputBuffer();
-            cout << "杈撳叆鏃犳晥锛岃閲嶆柊杈撳叆銆? << endl;
+            cout << "输入无效，请重新输入。" << endl;
             continue;
         }
 
@@ -501,8 +496,8 @@ int main() {
             case 4: manager.findStudent(); break;
             case 5: manager.deleteStudent(); break;
             case 6: manager.saveToFile(); break;
-            case 0: cout << "鍐嶈锛? << endl; break;
-            default: cout << "鏃犳晥閫夋嫨锛岃閲嶆柊杈撳叆銆? << endl;
+            case 0: cout << "再见！" << endl; break;
+            default: cout << "无效选择，请重新输入。" << endl;
         }
     } while (choice != 0);
 
